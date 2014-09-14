@@ -18,12 +18,14 @@ class KNN(object):
         '''
         初始化方法，需要指定训练数据集及每条记录对应的标签k
         x:训练数据集 m*n维矩阵，m为事务数，n为feature的数量
-        y:训练数据集对应的标签， m*1维矩阵，m为事务数，代表训练数据的每一行属于哪一种类别
+        y:训练数据集对应的标签， 类型为列表，按顺序存放m个值，m为事务数，代表训练数据的每一行属于哪一种类别
         k:knn算法指定的k
         '''
         self.x = x
         self.y = y
         self.k = k
+        self._normalizeTrainingSet();
+        
         
     def _normalizeTrainingSet(self):
         '''
@@ -71,20 +73,56 @@ class KNN(object):
         '''
         传入一个事务(n*1)，计算距离到它最近几个事务的标签
         '''
+        # 声明结果数组，用与存放最近几个事务的标签
+        result = []
         # 获取事务总数m
         m = np.shape(self.x)[0]
-        # 对事务进行归一化
-        x = self._normalize(inputData)
         # 每个原始数据点减去输入数据的feature
-        differ = self.x_normal - np.tile(x, (m, 1))
+        differ = self.x_normal - np.tile(inputData, (m, 1))
         # 平方求和再开方即得到输入事务到每个训练数据点的距离
-        distance = np.sum(differ * differ, 0)
+        differ = differ * differ
+        distance = np.sum(differ, 1)
         # 开方得到距离
         distance = np.sqrt(distance)
         # 对距离进行排序，得到的结果为m*1矩阵，内容为当前点到输入数据距离的排名
         sortedIndex = np.argsort(distance, 0)
-        # 
+        # 取距离排序在前k个的所有标签
+        for i in range(m):
+            # 当取到的点为k时跳出循环
+            if i >= self.k:
+                break
+            index = sortedIndex[i]
+            # 获取距离第i个事务的标签
+            result.append(self.y[index])
+        # 返回结果
+        return result
         
+    def _judge(self,h):
+        '''
+        根据knn算出来的k个标签决定该事物应该属于哪个分类
+        h 为 k*1向量
+        '''
+        # 声明一个字典，存放每个类标签的数量
+        result_dict = {}
+        for i in h:
+            result_dict[i] = result_dict.get(i,0) + 1
+        # 对字典按值降序排序
+        sortedLables = sorted(result_dict.items(), key=lambda result_dict:result_dict[1],reverse=True)
+        # 返回排名第一的标签
+        return sortedLables[0][0]
+    
+    def classify(self,inputData):
+        '''
+        分类方法，inputData为n*1向量
+        '''
+        # 对事务进行归一化
+        normalizedData = self._normalize(inputData)
+        # 求出距离最近的k个点
+        topK = self._getTopK(normalizedData)
+        # 获得k个点中出现次数最多的标签
+        result =  self._judge(topK)
+        # 返回结果
+        return result
         
         
         
