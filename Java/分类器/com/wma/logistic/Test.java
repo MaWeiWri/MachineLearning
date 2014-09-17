@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-public class AttributeFilter {
+public class Test {
 
-	private static final String INPUT_PATH = "./Iknow/UniData/UniDataOut";
-	private static final String OUTPUT_PATH = "./Iknow/UniData1/UniDataOut1";
+	private static final String INPUT_PATH = "";
+	private static final String OUTPUT_PATH = "";
 	
 	public static void main(String[] args) throws Exception{
 		
