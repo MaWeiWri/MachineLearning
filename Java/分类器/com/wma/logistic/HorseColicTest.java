@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import com.fh.iknow.logistic.GradAscentModel;
-import com.fh.iknow.logistic.GradDescentModel;
 
 import Jama.Matrix;
 

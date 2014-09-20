@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.fh.iknow.bayes.BayesObject;
-import com.fh.iknow.bayes.NaiveBayes;
 
 /**
  * 朴素贝叶斯分类器 能够被序列化与反序列化以支持增量式训练与使用
